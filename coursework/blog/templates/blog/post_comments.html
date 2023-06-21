@@ -1,0 +1,46 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+<div class="d-flex flex-column align-items-center gap-4" style="width: 100%">
+    <div class="post mb-4 p-3 bg-white" style="width: 50%; border-radius: 20px;">
+        <div class="d-flex justify-content-between">
+            <p class="h4"><a href="{% url 'user_posts' username=post.author.username %}">{{ post.author }}</a></p>
+            <p>{{ post.time_create }}</p>
+        </div>
+        <p class="text-lg p-2">{{ post.content }}</p>
+        <div style="width: 50%; margin-left: 50%; display: flex; gap: 5px; justify-content: right;">
+            <a href="{% url 'add_comment' post.id %}" class="post" style="width: 50%; margin-bottom: 0;">Додати коментар</a>
+        </div>
+    </div>
+    <h2>Коментарі:</h2>
+    {% for comment in comments %}
+    <div class="post mb-4 p-3 bg-white" style="width: 50%; border-radius: 20px;" id="comment_{{ comment.id }}">
+        <p class="text-lg p-2">{{ comment.content }}</p>
+        <p>{{ comment.time_create }}</p>
+        <div style="width: 70%; margin-left: 30%; display: flex; gap: 5px; justify-content: space-between; flex-direction: row-reverse;">
+            <p><a href="{% url 'add_reply' post.id comment.id  %}" class="post" style="width: 50%; margin-bottom: 0;">Відповісти</a></p>
+
+            {% if user.is_authenticated and comment.author == user %}
+            <p><a href="{% url 'edit_comment' comment.id %}" class="post" style="width: 50%; margin-bottom: 0;">Редагувати коментар</a></p>
+            {% endif %}
+            {% if comment.related_comment %}
+            <p>У відповідь на: <a href="#comment_{{ comment.related_comment.id }}">коментар</a></p>
+            {% endif %}
+            {% if user.is_authenticated  %}
+                {%  if comment.author == user or post.author == user %}
+                    <form action="{% url 'comment-delete' comment.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="text-danger btn btn-link" style="width: 50%; margin-bottom: 0; padding: 0;">
+                            <span>Видалити</span>
+                        </button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p>Комментарии отсутствуют.</p>
+    {% endfor %}
+</div>
+{% endblock %}

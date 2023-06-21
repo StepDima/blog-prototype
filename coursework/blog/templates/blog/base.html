@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мій додаток</title>
+    <link type="text/css" rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <style>
+        header {
+            padding: 20px;
+            background-color: #f8f9fa;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        header p {
+            margin-bottom: 0;
+        }
+        header a {
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        header a:hover {
+            text-decoration: underline;
+        }
+        div.a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 5px;
+        }
+        .twitter-link {
+            color: #1da1f2;
+        }
+        .twitter-link:hover {
+            text-decoration: none;
+            color: #1da1f2;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <header>
+        <div>
+            {% if request.path != '/' %}
+               <div><a href="{% url 'main_page' %}" class="btn btn-secondary">На головну</a></div>
+            {% endif %}
+        </div>
+        <div class="a">
+            {% if user.is_authenticated %}
+                <div><a href="{% url 'user_posts' user.username %}">{{ user.username }}</a></div>
+                <div><a href="{% url 'logout' %}" class="btn btn-primary">Вийти</a></div>
+            {% else %}
+                <div><a href="{% url 'login' %}" class="btn btn-primary">Увійти</a></div>
+                <div><a href="{% url 'register' %}" class="btn btn-primary">Зареєструватися</a></div>
+            {% endif %}
+        </div>
+    </header>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

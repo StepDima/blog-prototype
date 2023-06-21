@@ -1,0 +1,12 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+  <div class="d-flex flex-column align-items-center gap-4" style="width: 100%">
+    <h2>Редагувати коментар</h2>
+      <form id="edit_comment" style="width: 50%" method="post">
+      {% csrf_token %}
+    {{ form.content }}
+    </form>
+    <input form="edit_comment" class="btn btn-primary" style="width:45%; border-radius: 20px;" type="submit" value="Редагувати">
+  </div>
+{% endblock %}
+
