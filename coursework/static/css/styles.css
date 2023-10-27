@@ -1,0 +1,33 @@
+html, body {
+    margin: 0;
+    height: 100%;
+}
+.pb-65{padding-bottom: 65px;}
+.rounded-20{border-radius: 20px;}
+.min-w-300{min-width: 300px;}
+.min-w-450{min-width: 450px;}
+.w-70{width:70%}
+.w-45{width:45%}
+.ml-30{margin-left: 30%}
+.custom-input {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background-color: transparent;
+    resize: none;
+    overflow: hidden;
+    height: auto;
+    word-wrap: break-word;
+}
+.styled-link-button {
+    color: #007bff;
+    text-decoration: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+.styled-link-button:hover {
+    text-decoration: underline;
+    color:#0a58ca;
+}

@@ -1,16 +1,17 @@
 {% extends 'blog/base.html' %}
 {% block content %}
-  <div class="d-flex flex-column align-items-center" style="width: 100%">
+
+<main class="d-flex flex-column align-items-center gap-4 w-100">
     <h1>Редагувати пост</h1>
-    <div class="post p-3 bg-white" style="width: 50%; border-radius: 20px;">
-      <div class="d-flex justify-content-between">
-        <p class="h4">{{ user.username }}</p>
-      </div>
-      <form method="post" id="edit_post">
-        {% csrf_token %}
-        {{ form.content }}
-      </form>
+    <div class="mb-4 p-3 bg-white w-50  rounded-20 min-w-450">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <p class="h4 m-0">{{ post.author }}</p>
+            <p class="m-0">{{ post.time_create }}</p>
+        </div>
+        <div>
+            <form method="post" id="edit_post">{% csrf_token %}{{ form.content }}</form>
+        </div>
     </div>
-    <input form="edit_post" class="btn btn-primary" style="width: 45%; border-radius: 20px;" type="submit" value="Зберегти зміни">
-  </div>
+    <input form="edit_post" class="btn btn-primary rounded-pill w-45" type="submit" value="Зберегти зміни">
+</main>
 {% endblock %}

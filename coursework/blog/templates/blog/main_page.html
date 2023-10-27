@@ -1,45 +1,41 @@
 {% extends 'blog/base.html' %}
 {% block content %}
-    <div class="d-flex flex-column align-items-center gap-4" style="width: 100%">
-        {% for post in posts %}
-            <div class="post mb-4 p-3 bg-white" style="width: 50%; border-radius: 20px;">
-                <div class="d-flex justify-content-between">
-                    <p class="h4">
-                        <a href="{% url 'user_posts' username=post.author.username %}">{{ post.author }}</a>
-                    </p>
-                    <p>{{ post.time_create }}</p>
-                </div>
-                <p class="text-lg p-2">{{ post.content }}</p>
-                <div style="width: 70%; margin-left: 30%; display: flex; gap: 5px; justify-content: space-between; flex-direction: row-reverse;">
-                    <p>
-                        <a href="{% url 'post_comments' post.id %}" class="post" style="width: 50%; margin-bottom: 0;">Подивитися коментарі</a>
-                    </p>
-                    {% if user.is_authenticated and post.author == user %}
-                        <p><a href="{% url 'edit_post' post.id %}" class="post" style="width: 50%; margin-bottom: 0;">Редагувати пост</a></p>
-                        <form action="{% url 'post-delete' post.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="text-danger btn btn-link" style="width: 50%; margin-bottom: 0; padding: 0;">
-                                <span>Видалити</span>
-                            </button>
-                        </form>
-                    {% endif %}
-                </div>
-            </div>
-        {% empty %}
-            <p>Постів немає.</p>
-        {% endfor %}
-    {% if posts.has_other_pages %}
-        <div class="pagination mt-4">
-            {% if posts.has_previous %}
-                <a href="?page=1" class="btn btn-lg bg-white btn-custom-rounded">|<<</a>
-                <a href="?page={{ posts.previous_page_number }}" class="btn btn-lg bg-white btn-custom-rounded"><</a>
-            {% endif %}
-            <span class="btn btn-lg bg-white btn-custom-rounded">{{ posts.number }}</span>
-            {% if posts.has_next %}
-                <a href="?page={{ posts.next_page_number }}" class="btn btn-lg bg-white btn-custom-rounded">></a>
-                <a href="?page={{ posts.paginator.num_pages }}" class="btn btn-lg bg-white btn-custom-rounded">>>|</a>
+
+<main class="d-flex flex-column align-items-center gap-4 pb-65">
+    {% for post in posts %}
+    <div class="mb-4 p-3 bg-white w-50  rounded-20">
+        <div class="d-flex justify-content-between align-items-end  mx-3">
+            <p class="h4 m-0"><a href="{% url 'user_posts' username=post.author.username %}">{{ post.author }}</a></p>
+            <p class="m-0">{{ post.time_create }}</p></div>
+        <div><p class="text-lg p-2">{{ post.content }}</p></div>
+        <div class="w-70 ml-30 g-4 justify-content-between d-flex flex-row-reverse">
+            <p><a href="{% url 'post_comments' post.id %}" class="w-50 mb-0">Подивитися коментарі</a></p>
+            {% if user.is_authenticated and post.author == user %}
+            <p><a href="{% url 'edit_post' post.id %}" class="w-50 mb-0">Редагувати пост</a></p>
+            <form action="{% url 'post-delete' post.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="text-danger btn btn-link border-0 w-50 mb-0 p-0"><p class="align-top">Видалити</p></button>
+            </form>
             {% endif %}
         </div>
-    {% endif %}
     </div>
+    {% empty %}
+        <p>Постів немає.</p>
+    {% endfor %}
+</main>
+{% if posts.has_other_pages %}
+<footer class="mt-4 bg-light fixed-bottom ">
+    <div class="pagination container d-flex justify-content-center">
+        {% if posts.has_previous %}
+        <a href="?page=1" class="btn m-2 btn-lg bg-white btn-custom-rounded">|<<</a>
+        <a href="?page={{ posts.previous_page_number }}" class="btn m-2 btn-lg bg-white btn-custom-rounded"><</a>
+        {% endif %}
+        <span class="btn m-2 btn-lg bg-white btn-custom-rounded">{{ posts.number }}</span>
+        {% if posts.has_next %}
+        <a href="?page={{ posts.next_page_number }}" class="btn m-2 btn-lg bg-white btn-custom-rounded">></a>
+        <a href="?page={{ posts.paginator.num_pages }}" class="btn m-2 btn-lg bg-white btn-custom-rounded">>>|</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</footer>
 {% endblock %}

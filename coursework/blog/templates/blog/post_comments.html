@@ -1,46 +1,60 @@
 {% extends 'blog/base.html' %}
-
 {% block content %}
 
-<div class="d-flex flex-column align-items-center gap-4" style="width: 100%">
-    <div class="post mb-4 p-3 bg-white" style="width: 50%; border-radius: 20px;">
-        <div class="d-flex justify-content-between">
-            <p class="h4"><a href="{% url 'user_posts' username=post.author.username %}">{{ post.author }}</a></p>
-            <p>{{ post.time_create }}</p>
-        </div>
-        <p class="text-lg p-2">{{ post.content }}</p>
-        <div style="width: 50%; margin-left: 50%; display: flex; gap: 5px; justify-content: right;">
-            <a href="{% url 'add_comment' post.id %}" class="post" style="width: 50%; margin-bottom: 0;">Додати коментар</a>
+<main class="d-flex flex-column align-items-center gap-4 w-100">
+    <div class="post mb-4 p-3 bg-white w-50  rounded-20  min-w-450">
+        <div class="d-flex justify-content-between align-items-end  mx-3">
+            <p class="h4 m-0"><a href="{% url 'user_posts' username=post.author.username %}">{{ post.author }}</a></p>
+            <p class="m-0">{{ post.time_create }}</p></div>
+        <div><p class="text-lg p-2">{{ post.content }}</p></div>
+        <div class="w-70 ml-30 g-4 justify-content-between d-flex flex-row-reverse">
+            <p><a href="{% url 'add_comment' post.id %}" class="w-50 mb-0">Додати коментар</a></p>
+            {% if user.is_authenticated and post.author == user %}
+            <p><a href="{% url 'edit_post' post.id %}" class="w-50 mb-0">Редагувати пост</a></p>
+            <form action="{% url 'post-delete' post.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="text-danger btn btn-link border-0 w-50 mb-0 p-0">
+                    <p class="align-top">Видалити</p>
+                </button>
+            </form>
+            {% endif %}
         </div>
     </div>
-    <h2>Коментарі:</h2>
-    {% for comment in comments %}
-    <div class="post mb-4 p-3 bg-white" style="width: 50%; border-radius: 20px;" id="comment_{{ comment.id }}">
-        <p class="text-lg p-2">{{ comment.content }}</p>
-        <p>{{ comment.time_create }}</p>
-        <div style="width: 70%; margin-left: 30%; display: flex; gap: 5px; justify-content: space-between; flex-direction: row-reverse;">
-            <p><a href="{% url 'add_reply' post.id comment.id  %}" class="post" style="width: 50%; margin-bottom: 0;">Відповісти</a></p>
-
-            {% if user.is_authenticated and comment.author == user %}
-            <p><a href="{% url 'edit_comment' comment.id %}" class="post" style="width: 50%; margin-bottom: 0;">Редагувати коментар</a></p>
-            {% endif %}
-            {% if comment.related_comment %}
-            <p>У відповідь на: <a href="#comment_{{ comment.related_comment.id }}">коментар</a></p>
-            {% endif %}
-            {% if user.is_authenticated  %}
-                {%  if comment.author == user or post.author == user %}
-                    <form action="{% url 'comment-delete' comment.id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="text-danger btn btn-link" style="width: 50%; margin-bottom: 0; padding: 0;">
-                            <span>Видалити</span>
-                        </button>
-                    </form>
+    <div class="d-flex flex-column align-items-center gap-4 w-50">
+        <h2>Коментарі:</h2>
+        {% for comment in comments %}
+        <div class="mb-4 p-3 bg-white rounded-20 w-75 min-w-300 " id="comment_{{ comment.id }}">
+            <div class="d-flex justify-content-between align-items-end  mx-3">
+                <p class="fw-medium fs-5 mb-2"><a href="{% url 'user_posts' username=comment.author.username %}"
+                                                  class="w-50 mb-0">{{comment.author.username}}</a></p>
+                <p class="mb-2 text-muted">{{ comment.time_create }}</p>
+            </div>
+            <div><p class="text-lg p-2 text-break">{{ comment.content }} </p></div>
+            <div class="w-70 ml-30 g-4 justify-content-between d-flex flex-row-reverse ml-30">
+                {% if user.is_authenticated %}
+                <p><a href="{% url 'add_reply' post.id comment.id  %}" class="w-50 mb-0">Відповісти</a></p>
+                {% if comment.author == user %}
+                <p><a href="{% url 'edit_comment' comment.id %}" class="w-50 mb-0">Редагувати коментар</a></p>
                 {% endif %}
-            {% endif %}
+                {% endif %}
+                {% if comment.related_comment %}
+                <p>У відповідь на: <a href="#comment_{{ comment.related_comment.id }}">коментар</a></p>
+                {% endif %}
+                {% if user.is_authenticated %}
+                {% if comment.author == user or post.author == user %}
+                <form action="{% url 'comment-delete' comment.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="text-danger btn btn-link border-0 p-0 w-50 mb-0">
+                        <p>Видалити</p>
+                    </button>
+                </form>
+                {% endif %}
+                {% endif %}
+            </div>
         </div>
+        {% empty %}
+        <p>Комментарі відсутні.</p>
+        {% endfor %}
     </div>
-    {% empty %}
-    <p>Комментарии отсутствуют.</p>
-    {% endfor %}
-</div>
+</main>
 {% endblock %}
